@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#eee</color>
+    <color name="black">#111</color>
+
+    <color name="greyLightXX">#bbb</color>
+    <color name="greyLightX">#aaa</color>
+    <color name="greyLight">#999</color>
+
+    <color name="grey">#777</color>
+
+    <color name="greyDark">#555</color>
+    <color name="greyDarkX">#444</color>
+    <color name="greyDarkXX">#333</color>
+    
+    <color name="red">#ff304f</color>
+
+    <color name="greenLeafLight">#b5f19d</color>        <!-- https://www.colorhexa.com/b5f19d -->
+    <color name="greenLeaf">#83e85a</color>             <!-- https://www.colorhexa.com/83e85a -->
+    <color name="greenLeafDark">#3a9415</color>             <!-- https://www.colorhexa.com/83e85a -->
+
+</resources>

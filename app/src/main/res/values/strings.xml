@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Clock Suite</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="fragment_alarms_label">Alarms</string>
+    <string name="fragment_timezone_label">Time Zones</string>
+    <string name="fragment_chrono_label">Chrono</string>
+    <string name="fragment_timer_label">Timer</string>
+</resources>
