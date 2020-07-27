@@ -71,4 +71,9 @@ public class Alarm {
     {
         return mTime.get(Calendar.MINUTE);
     }
+
+    public AlarmRepeatMode getRepeatMode ()
+    {
+        return alarmRepeatMode;
+    }
 }

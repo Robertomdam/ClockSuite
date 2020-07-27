@@ -22,11 +22,13 @@ public class DBManager {
         mDAOAlarms = mDatabase.daoAlarms();
     }
 
-    public void insertAlarm (Alarm alarm) {
-        mDAOAlarms.insert (alarm);
+    public void insertAlarm (Alarm alarm) { mDAOAlarms.insert (alarm); }
+
+    public void updateAlarm(Alarm alarm) {
+        mDAOAlarms.update (alarm);
     }
 
-    public Alarm getAlarmsById (int id) {
+    public Alarm getAlarmsById (long id) {
         return mDAOAlarms.get (id);
     }
 
@@ -34,7 +36,7 @@ public class DBManager {
         return new ArrayList<Alarm> (mDAOAlarms.getAll ());
     }
 
-    public void removeAlarm (int id) {
+    public void removeAlarm (long id) {
         mDAOAlarms.remove (id);
     }
 

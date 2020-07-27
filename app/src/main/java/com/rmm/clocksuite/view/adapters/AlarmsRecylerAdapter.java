@@ -10,6 +10,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rmm.clocksuite.R;
+import com.rmm.clocksuite.entity.Alarm;
 
 import java.util.ArrayList;
 
@@ -20,8 +21,8 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
 
     private IAlarmRecyclerEventListener mEventListener;
 
-    private ArrayList<String> mData;
-    public void setData(ArrayList<String> data) {
+    private ArrayList<Alarm> mData;
+    public void setData(ArrayList<Alarm> data) {
         mData = data;
     }
 
@@ -52,9 +53,12 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
      */
     @Override
     public void onBindViewHolder(@NonNull AlarmViewHolder holder, int position) {
-        holder.tvTime.setText ("12:34");
-        holder.tvNote.setText ("Test note");
-        holder.swSwitch.setChecked (true);
+
+        Alarm alarm = mData.get(position);
+
+        holder.tvTime.setText (String.format("%02d:%02d", alarm.getHour(), alarm.getMinute()));
+        holder.tvNote.setText (alarm.getNote());
+        holder.swSwitch.setChecked (alarm.getEnabled());
     }
 
     /**
@@ -63,7 +67,7 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
      */
     @Override
     public int getItemCount() {
-        return 14;
+        return mData.size();
     }
 
     /**

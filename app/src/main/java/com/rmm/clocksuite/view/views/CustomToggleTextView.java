@@ -79,6 +79,12 @@ public class CustomToggleTextView extends androidx.appcompat.widget.AppCompatTex
     public boolean getIsSelected () { return mIsSelected; }
 
     /**
+     * Setter for the isSelected value.
+     * @param b If the toggle is selected or not.
+     */
+    public void setIsSelected (boolean b) { mIsSelected = b; refreshAppearance(); }
+
+    /**
      * Adds a new event listeners for the view.
      * @param eventListener The reference to the new event listener.
      */

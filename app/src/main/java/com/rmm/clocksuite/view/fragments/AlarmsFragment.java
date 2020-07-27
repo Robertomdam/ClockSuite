@@ -15,16 +15,24 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rmm.clocksuite.R;
+import com.rmm.clocksuite.entity.Alarm;
+import com.rmm.clocksuite.presenter.AlarmsPresenter;
+import com.rmm.clocksuite.presenter.IAlarmsContracts;
 import com.rmm.clocksuite.view.activities.AlarmDetailsActivity;
 import com.rmm.clocksuite.view.adapters.AlarmsRecylerAdapter;
+
+import java.util.ArrayList;
 
 
 /**
  * Custom Fragment class to handle Alarms by using a RecyclerView.
  */
-public class AlarmsFragment extends Fragment implements AlarmsRecylerAdapter.IAlarmRecyclerEventListener {
+public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarmsHandlerView, AlarmsRecylerAdapter.IAlarmRecyclerEventListener {
+
+    private IAlarmsContracts.IAlarmsPresenterFromView mPresenter;
 
     private AlarmsRecylerAdapter alarmsRecylerAdapter;
+    private ArrayList<Alarm> listAlarms;
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
@@ -59,39 +67,31 @@ public class AlarmsFragment extends Fragment implements AlarmsRecylerAdapter.IAl
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mPresenter = AlarmsPresenter.getInstance();
+        mPresenter.registerView (this);
+        listAlarms = mPresenter.getAllAlarms();
+
         findViews (view);
-        setupRecycler (view );
+        setupRecycler (view, listAlarms);
         setupFloatingActionButton();
-    }
 
-    // TODO Comment
-    @Override
-    public void onAlarmItemSelected(int position) {
-
-        // TODO Change temp implementation for a real one when model and presenter are implemented.
-        long alarmId = -1;
-//        alarmId = mPresenter.getAlarms().get (position).getId ();
-        alarmId = position;
-
-//        DBManager dbManager = new DBManager (getActivity().getApplicationContext());
-//
-//        Calendar cal = Calendar.getInstance();
-//        cal.set (Calendar.HOUR_OF_DAY, 15);
-//        cal.set (Calendar.MINUTE, 24);
-//
-//        Alarm alarm = new Alarm();
-//        alarm.setNote("testNote");
-//        alarm.setTime (cal);
-//
-//        dbManager.insertAlarm (alarm);
-//        ArrayList<Alarm> alarms = dbManager.getAllAlarms();
-//
 //        Log.d("DEBUGGING", "num alarms: " + alarms.size());
 //        for (int i = 0; i < alarms.size(); i++) {
 //            Log.d("DEBUGGING", "("+i+") Id: ): " + alarms.get(i).getId());
 //            Log.d("DEBUGGING", "("+i+") Time: ): " + alarms.get(i).getHour() + ":" + alarms.get(i).getMinute());
 //
 //        }
+
+    }
+
+    // TODO Comment
+    @Override
+    public void onAlarmItemSelected (int position) {
+
+        // TODO Change temp implementation for a real one when model and presenter are implemented.
+        long alarmId = -1;
+//        alarmId = mPresenter.getAlarms().get (position).getId ();
+        alarmId =  listAlarms.get(position).getId();
 
         goActivityAlarmDetail (alarmId);
 //        Toast.makeText(getContext(), "Alarm " + alarmId + " was selected!", Toast.LENGTH_SHORT).show();
@@ -112,9 +112,10 @@ public class AlarmsFragment extends Fragment implements AlarmsRecylerAdapter.IAl
      * Also creates a LinearLayoutManager for it.
      * @param view The root view of the fragment.
      */
-    private void setupRecycler (View view)
+    private void setupRecycler (View view, ArrayList<Alarm> alarms)
     {
         alarmsRecylerAdapter = new AlarmsRecylerAdapter (this);
+        alarmsRecylerAdapter.setData (alarms);
         recyclerView.setLayoutManager( new LinearLayoutManager (view.getContext()) );
         recyclerView.setAdapter (alarmsRecylerAdapter);
 //        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL));
