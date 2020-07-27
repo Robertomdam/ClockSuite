@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LeafTheme">
-        <activity android:name=".view.activities.AlarmDetailActivity"></activity>
+        <activity android:name=".view.activities.AlarmDetailsActivity"></activity>
         <activity android:name=".view.activities.TabbedActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

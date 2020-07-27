@@ -21,8 +21,8 @@ public abstract class CustomDatabase extends RoomDatabase {
     {
         if (instance == null)
             synchronized (CustomDatabase.class) {
-//                instance = Room.databaseBuilder (appContext, CustomDatabase.class, DBConst.DATABASE_NAME).build();
-                instance = Room.databaseBuilder (appContext, CustomDatabase.class, DBConst.DATABASE_NAME).allowMainThreadQueries().build();
+                instance = Room.databaseBuilder (appContext, CustomDatabase.class, DBConst.DATABASE_NAME).build();
+//                instance = Room.databaseBuilder (appContext, CustomDatabase.class, DBConst.DATABASE_NAME).allowMainThreadQueries().build();
             }
         return instance;
     }

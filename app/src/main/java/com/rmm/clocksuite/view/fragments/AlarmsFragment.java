@@ -6,25 +6,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rmm.clocksuite.R;
-import com.rmm.clocksuite.database.DBManager;
-import com.rmm.clocksuite.entity.Alarm;
-import com.rmm.clocksuite.view.activities.AlarmDetailActivity;
+import com.rmm.clocksuite.view.activities.AlarmDetailsActivity;
 import com.rmm.clocksuite.view.adapters.AlarmsRecylerAdapter;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 
 /**
@@ -81,27 +73,27 @@ public class AlarmsFragment extends Fragment implements AlarmsRecylerAdapter.IAl
 //        alarmId = mPresenter.getAlarms().get (position).getId ();
         alarmId = position;
 
-        DBManager dbManager = new DBManager (getActivity().getApplicationContext());
+//        DBManager dbManager = new DBManager (getActivity().getApplicationContext());
+//
+//        Calendar cal = Calendar.getInstance();
+//        cal.set (Calendar.HOUR_OF_DAY, 15);
+//        cal.set (Calendar.MINUTE, 24);
+//
+//        Alarm alarm = new Alarm();
+//        alarm.setNote("testNote");
+//        alarm.setTime (cal);
+//
+//        dbManager.insertAlarm (alarm);
+//        ArrayList<Alarm> alarms = dbManager.getAllAlarms();
+//
+//        Log.d("DEBUGGING", "num alarms: " + alarms.size());
+//        for (int i = 0; i < alarms.size(); i++) {
+//            Log.d("DEBUGGING", "("+i+") Id: ): " + alarms.get(i).getId());
+//            Log.d("DEBUGGING", "("+i+") Time: ): " + alarms.get(i).getHour() + ":" + alarms.get(i).getMinute());
+//
+//        }
 
-        Calendar cal = Calendar.getInstance();
-        cal.set (Calendar.HOUR_OF_DAY, 15);
-        cal.set (Calendar.MINUTE, 24);
-
-        Alarm alarm = new Alarm();
-        alarm.setNote("testNote");
-        alarm.setTime (cal);
-
-        dbManager.insertAlarm (alarm);
-        ArrayList<Alarm> alarms = dbManager.getAllAlarms();
-
-        Log.d("DEBUGGING", "num alarms: " + alarms.size());
-        for (int i = 0; i < alarms.size(); i++) {
-            Log.d("DEBUGGING", "("+i+") Id: ): " + alarms.get(i).getId());
-            Log.d("DEBUGGING", "("+i+") Time: ): " + alarms.get(i).getHour() + ":" + alarms.get(i).getMinute());
-
-        }
-
-//        goActivityAlarmDetail (alarmId);
+        goActivityAlarmDetail (alarmId);
 //        Toast.makeText(getContext(), "Alarm " + alarmId + " was selected!", Toast.LENGTH_SHORT).show();
     }
 
@@ -146,7 +138,7 @@ public class AlarmsFragment extends Fragment implements AlarmsRecylerAdapter.IAl
      */
     private void goActivityAlarmDetail (long alarmId)
     {
-        Intent intent = new Intent (getContext(), AlarmDetailActivity.class);
+        Intent intent = new Intent (getContext(), AlarmDetailsActivity.class);
         intent.putExtra ("alarmId", alarmId);
         startActivity (intent);
     }

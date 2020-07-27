@@ -12,6 +12,7 @@ public class Alarm {
 
     @PrimaryKey (autoGenerate = true)
     @ColumnInfo (name = "alarmId") public long mId;
+    @ColumnInfo (name = "enabled") public boolean mEnabled;
 
     @ColumnInfo (name = "note") public String mNote;
     @ColumnInfo (name = "time") public Calendar mTime;
@@ -21,6 +22,7 @@ public class Alarm {
     public Alarm ()
     {
         mId = 0;        // This has to be zero in order to Room (@insert) to not be inserted in the query
+        mEnabled = false;
         mNote = "";
         alarmRepeatMode = new AlarmRepeatMode ();
     }
@@ -28,6 +30,16 @@ public class Alarm {
     public long getId ()
     {
         return mId;
+    }
+
+    public boolean getEnabled ()
+    {
+        return mEnabled;
+    }
+
+    public void setEnabled (boolean enabled)
+    {
+        mEnabled = enabled;
     }
 
     public String getNote ()
