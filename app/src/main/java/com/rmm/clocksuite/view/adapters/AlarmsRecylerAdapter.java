@@ -3,6 +3,7 @@ package com.rmm.clocksuite.view.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,8 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
         holder.tvTime.setText (String.format("%02d:%02d", alarm.getHour(), alarm.getMinute()));
         holder.tvNote.setText (alarm.getNote());
         holder.swSwitch.setChecked (alarm.getEnabled());
+
+        holder.setupEventListener();
     }
 
     /**
@@ -73,7 +76,7 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
     /**
      * Custom ViewHolder to help the AlarmsRecyclerAdapter handle the alarms.
      */
-    class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, SwitchCompat.OnCheckedChangeListener {
 
         private TextView tvTime;
         private TextView tvNote;
@@ -89,8 +92,6 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
             tvTime   = itemView.findViewById (R.id.tvTime);
             tvNote   = itemView.findViewById (R.id.tvNote);
             swSwitch = itemView.findViewById (R.id.swSwitch);
-
-            itemView.setOnClickListener(this);
         }
 
         /**
@@ -101,6 +102,17 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
         public void onClick (View view) {
             mEventListener.onAlarmItemSelected( getAdapterPosition() );
         }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            mEventListener.onAlarmSwitchStateChanged (getAdapterPosition(), b);
+        }
+
+        public void setupEventListener ()
+        {
+            itemView.setOnClickListener (this);
+            swSwitch.setOnCheckedChangeListener (this);
+        }
     }
 
     /**
@@ -109,5 +121,6 @@ public class AlarmsRecylerAdapter extends RecyclerView.Adapter<AlarmsRecylerAdap
     public interface IAlarmRecyclerEventListener
     {
         public void onAlarmItemSelected(int position);
+        public void onAlarmSwitchStateChanged (int position, boolean state);
     }
 }

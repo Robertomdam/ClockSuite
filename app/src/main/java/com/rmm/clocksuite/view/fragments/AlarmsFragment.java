@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rmm.clocksuite.R;
@@ -74,27 +76,25 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         findViews (view);
         setupRecycler (view, listAlarms);
         setupFloatingActionButton();
-
-//        Log.d("DEBUGGING", "num alarms: " + alarms.size());
-//        for (int i = 0; i < alarms.size(); i++) {
-//            Log.d("DEBUGGING", "("+i+") Id: ): " + alarms.get(i).getId());
-//            Log.d("DEBUGGING", "("+i+") Time: ): " + alarms.get(i).getHour() + ":" + alarms.get(i).getMinute());
-//
-//        }
-
     }
 
-    // TODO Comment
     @Override
     public void onAlarmItemSelected (int position) {
+        goActivityAlarmDetail (listAlarms.get(position).getId());
+    }
 
-        // TODO Change temp implementation for a real one when model and presenter are implemented.
-        long alarmId = -1;
-//        alarmId = mPresenter.getAlarms().get (position).getId ();
-        alarmId =  listAlarms.get(position).getId();
+    @Override
+    public void onAlarmSwitchStateChanged(int position, boolean state) {
 
-        goActivityAlarmDetail (alarmId);
-//        Toast.makeText(getContext(), "Alarm " + alarmId + " was selected!", Toast.LENGTH_SHORT).show();
+        Alarm alarm = listAlarms.get(position);
+        alarm.setEnabled (state);
+        mPresenter.updateAlarm (alarm);
+
+        Toast.makeText (
+                getContext(),
+                "Alarm " + position + " changed state to " + (state ? "true" : "false"),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
     /**
@@ -142,5 +142,12 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         Intent intent = new Intent (getContext(), AlarmDetailsActivity.class);
         intent.putExtra ("alarmId", alarmId);
         startActivity (intent);
+    }
+
+    @Override
+    public void onDataChanged(ArrayList<Alarm> alarms) {
+        listAlarms = alarms;
+        alarmsRecylerAdapter.setData (listAlarms);
+        alarmsRecylerAdapter.notifyDataSetChanged();
     }
 }

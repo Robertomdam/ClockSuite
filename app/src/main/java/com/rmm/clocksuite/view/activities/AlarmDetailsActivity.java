@@ -1,7 +1,6 @@
 package com.rmm.clocksuite.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +10,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 
 import com.rmm.clocksuite.R;
 import com.rmm.clocksuite.entity.Alarm;
+import com.rmm.clocksuite.entity.AlarmRepeatMode;
 import com.rmm.clocksuite.presenter.AlarmsPresenter;
 import com.rmm.clocksuite.presenter.IAlarmsContracts;
 import com.rmm.clocksuite.view.views.CustomToggleTextView;
@@ -30,7 +29,6 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
 
     private IAlarmsContracts.IAlarmsPresenterFromView mPresenter;
 
-    private long   currentAlarmId;
     private Alarm    currentAlarm;
 
     private NumberPicker   npHour;
@@ -59,14 +57,15 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         mPresenter = AlarmsPresenter.getInstance();
         mPresenter.registerView (this);
 
-        currentAlarmId = getIntent().getLongExtra("alarmId", -1);
+        // Handles some information about the current alarm that the activity will be managing
+        long currentAlarmId = getIntent().getLongExtra("alarmId", -1);
 
-        if (currentAlarmId < 0) {
-            ivDelete.setVisibility(View.INVISIBLE);
+        if (currentAlarmId < 0) { // New alarm
+            ivDelete.setVisibility (View.INVISIBLE);
         }
-        else {
-            currentAlarm = mPresenter.getAlarm(currentAlarmId);
-            loadData (currentAlarm);
+        else {  // Already existing alarm
+            currentAlarm = mPresenter.getAlarm (currentAlarmId);
+            loadFieldsDataFromAlarm(currentAlarm);
         }
     }
 
@@ -81,6 +80,7 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         ivDelete = findViewById (R.id.ivDelete);
           ivSave = findViewById (R.id.ivSave  );
 
+        // Find all Toggle TextView views
         LinearLayout v1 = findViewById(R.id.repeatWeekDaysLayout);
         LinearLayout v2 = findViewById(R.id.repeatWeekEndDaysLayout);
 
@@ -135,7 +135,7 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         ivSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveAlarm ();
+                onSaveAlarm();
             }
         });
     }
@@ -144,77 +144,91 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
      * Loads the data of an alarm in the corresponding fields.
      * @param alarm The alarm to take the data from.
      */
-    private void loadData (Alarm alarm) {
-        npHour.setValue (alarm.getHour ());
+    private void loadFieldsDataFromAlarm (Alarm alarm) {
+
+        // Number pickers that represent the time
+          npHour.setValue (alarm.getHour   ());
         npMinute.setValue (alarm.getMinute ());
-        etNote.setText (alarm.getNote ());
 
-        cttvDays.get(0).setIsSelected ( alarm.getRepeatMode ().mMonday );
-        cttvDays.get(1).setIsSelected ( alarm.getRepeatMode ().mTuesday );
-        cttvDays.get(2).setIsSelected ( alarm.getRepeatMode ().mWednesday );
-        cttvDays.get(3).setIsSelected ( alarm.getRepeatMode ().mThursday );
-        cttvDays.get(4).setIsSelected ( alarm.getRepeatMode ().mFriday );
-        cttvDays.get(5).setIsSelected ( alarm.getRepeatMode ().mSaturday );
-        cttvDays.get(6).setIsSelected ( alarm.getRepeatMode ().mSunday );
+        // Edit text that represent the note
+          etNote.setText  (alarm.getNote   ());
 
-        Log.d("DEBUGGING", "Load Monday: " + alarm.getRepeatMode().mMonday);
+        // Toggle Text views that represents the repeat mode
+        cttvDays.get(0).setIsSelected ( alarm.getAlarmRepeatMode().mMonday    );
+        cttvDays.get(1).setIsSelected ( alarm.getAlarmRepeatMode().mTuesday   );
+        cttvDays.get(2).setIsSelected ( alarm.getAlarmRepeatMode().mWednesday );
+        cttvDays.get(3).setIsSelected ( alarm.getAlarmRepeatMode().mThursday  );
+        cttvDays.get(4).setIsSelected ( alarm.getAlarmRepeatMode().mFriday    );
+        cttvDays.get(5).setIsSelected ( alarm.getAlarmRepeatMode().mSaturday  );
+        cttvDays.get(6).setIsSelected ( alarm.getAlarmRepeatMode().mSunday    );
+
+//        Log.d("DEBUGGING", "Load Monday: " + alarm.getRepeatMode().mMonday);
     }
 
     /**
      * Gathers all the data in the layout views to create and return an alarm.
-     * @return
+     * @return The recently created alarm.
      */
     private Alarm createAlarmFromViews ()
     {
-        Alarm alarm = new Alarm();
-        alarm.setNote (etNote.getText().toString());
+        // Note
+        String note = etNote.getText().toString();
 
-        Calendar c = Calendar.getInstance();
-        c.set (Calendar.HOUR_OF_DAY, npHour.getValue());
-        c.set (Calendar.MINUTE, npMinute.getValue());
-        alarm.setTime (c);
+        // Time
+        Calendar time = Calendar.getInstance();
+        time.set (Calendar.HOUR_OF_DAY, npHour.getValue());
+        time.set (Calendar.MINUTE, npMinute.getValue());
 
-        alarm.getRepeatMode ().mMonday    = cttvDays.get(0).getIsSelected();
-        alarm.getRepeatMode ().mTuesday   = cttvDays.get(1).getIsSelected();
-        alarm.getRepeatMode ().mWednesday = cttvDays.get(2).getIsSelected();
-        alarm.getRepeatMode ().mThursday  = cttvDays.get(3).getIsSelected();
-        alarm.getRepeatMode ().mFriday    = cttvDays.get(4).getIsSelected();
-        alarm.getRepeatMode ().mSaturday  = cttvDays.get(5).getIsSelected();
-        alarm.getRepeatMode ().mSunday    = cttvDays.get(6).getIsSelected();
+        // Repeat mode
+        AlarmRepeatMode repeatMode = new AlarmRepeatMode();
+        repeatMode.mMonday    = cttvDays.get(0).getIsSelected();
+        repeatMode.mTuesday   = cttvDays.get(1).getIsSelected();
+        repeatMode.mWednesday = cttvDays.get(2).getIsSelected();
+        repeatMode.mThursday  = cttvDays.get(3).getIsSelected();
+        repeatMode.mFriday    = cttvDays.get(4).getIsSelected();
+        repeatMode.mSaturday  = cttvDays.get(5).getIsSelected();
+        repeatMode.mSunday    = cttvDays.get(6).getIsSelected();
 
-        return alarm;
+        return new Alarm (note, time, repeatMode);
     }
 
     /**
      * Calls the presenter to delete the instance of the alarm and then go back to the tabbed activity.
      */
     private void delete () {
-        mPresenter.removeAlarm (currentAlarm);
+        if (currentAlarm != null)
+            mPresenter.removeAlarm (currentAlarm);
+
         goToTabbedActivity();
     }
 
     /**
      * Checks whether the alarm already exists or not in order to call the presenter's method save or update.
      */
-    private void saveAlarm () {
-        if (currentAlarmId < 0)
-            save ();
+    private void onSaveAlarm() {
+        if (currentAlarm != null)
+            updateAlarm ();
         else
-            update ();
+            saveAlarm ();
     }
 
     /**
      * Calls the presenter to save the instance of the alarm and the go back to the tabbed activity.
      */
-    private void save () {
+    private void saveAlarm () {
         Alarm alarm = createAlarmFromViews();
+
         mPresenter.addAlarm ( alarm );
         goToTabbedActivity();
     }
 
-    private void update () {
+    /**
+     * Calls the presenter to update the existing alarm with the new values.
+     */
+    private void updateAlarm () {
         Alarm alarm = createAlarmFromViews();
-        alarm.mId = currentAlarmId;
+        alarm.setId (currentAlarm.getId());
+
         mPresenter.updateAlarm ( alarm );
         goToTabbedActivity();
     }
@@ -225,5 +239,10 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
     private void goToTabbedActivity () {
         Intent intent = new Intent(getApplicationContext(), TabbedActivity.class);
         startActivity (intent);
+    }
+
+    @Override
+    public void onDataChanged(ArrayList<Alarm> alarms) {
+
     }
 }

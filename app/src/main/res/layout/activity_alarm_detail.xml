@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivDelete"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_save"
+        android:src="@drawable/ic_check"
         android:tint="@color/greyLightXX"
         android:contentDescription="image_save" />
 

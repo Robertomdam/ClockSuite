@@ -3,6 +3,12 @@ package com.rmm.clocksuite.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 
+/**
+ * Data class that represents the repeat mode of an alarm.
+ * If all the day values are false, then the alarm repeat mode
+ * will be consider as repeat only once. If any day value is
+ * set to true, then the alarm should be repeated always in that day.
+ */
 public class AlarmRepeatMode
 {
     public long           mId;
