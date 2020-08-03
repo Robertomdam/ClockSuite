@@ -1,5 +1,7 @@
 package com.rmm.clocksuite.presenter;
 
+import androidx.core.app.AppLaunchChecker;
+
 import com.rmm.clocksuite.entity.Alarm;
 
 import java.util.ArrayList;
@@ -26,5 +28,20 @@ public class AlarmsHandlerPresenter implements IAlarmsContracts.IAlarmsHandlerPr
     @Override
     public void onDataChanged(ArrayList<Alarm> alarms) {
         mView.onDataChanged (alarms);
+    }
+
+    @Override
+    public void onAlarmAdded(Alarm alarm) {
+        mView.onAlarmAdded(alarm);
+    }
+
+    @Override
+    public void onAlarmUpdated(Alarm alarm) {
+        mView.onAlarmUpdated(alarm);
+    }
+
+    @Override
+    public void onAlarmRemoved(Alarm alarmCopy) {
+        mView.onAlarmRemoved(alarmCopy);
     }
 }

@@ -65,11 +65,30 @@ public class AlarmsModel implements IAlarmsContracts.IAlarmsModel, DBManager.ISt
 
     /**
      * Calls the database manager to remove an alarm.
-     * @param alarmId The id of the alarm to remove.
+     * @param alarmCopy The alarm to remove.
      */
     @Override
-    public void removeAlarm (long alarmId) {
-        dbManager.removeAlarmAsync(alarmId);
+    public void removeAlarm (Alarm alarmCopy) {
+        dbManager.removeAlarmAsync(alarmCopy);
+    }
+
+
+
+    // Database callbacks
+
+    @Override
+    public void onDataInserted(Alarm alarm) {
+        mPresenter.onAlarmAdded(alarm);
+    }
+
+    @Override
+    public void onDataUpdated(Alarm alarm) {
+        mPresenter.onAlarmUpdated(alarm);
+    }
+
+    @Override
+    public void onDataRemoved (Alarm alarmCopy) {
+        mPresenter.onAlarmRemoved(alarmCopy);
     }
 
     /**

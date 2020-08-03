@@ -75,10 +75,10 @@ public class DBManager {
 
     /**
      * Creates an async task to remove one alarm.
-     * @param id The id of the alarm to delete.
+     * @param alarmCopy The alarm to delete.
      */
-    public void removeAlarmAsync(final long id) {
-        new RemoveAlarmTask (id, mStatusHandler, this).execute();
+    public void removeAlarmAsync(final Alarm alarmCopy) {
+        new RemoveAlarmTask (alarmCopy, mStatusHandler, this).execute();
     }
 
     /**
@@ -93,6 +93,9 @@ public class DBManager {
      * Interface that allow an external class to listen to database events.
      */
     public interface IStatusHandler {
+        void onDataInserted (Alarm alarm);
+        void onDataUpdated  (Alarm alarm);
+        void onDataRemoved  (Alarm alarmCopy);
         void onDatabaseUpdate (ArrayList<Alarm> alarms);
     }
 
@@ -106,24 +109,31 @@ public class DBManager {
      */
     private static class InsertAlarmTask extends AsyncTask<Void, Void, Void> {
 
-        private DBManager mDBManager;
-        private IStatusHandler mEventListener;
-        private Alarm mAlarm;
+        private long            mReturnedId;
+        private DBManager       mDBManager;
+        private IStatusHandler  mEventListener;
+        private Alarm           mAlarm;
 
         InsertAlarmTask (Alarm alarm, IStatusHandler eventListener, DBManager dbManager) {
-            mAlarm = alarm;
-            mEventListener = eventListener;
-            mDBManager = dbManager;
+            mAlarm          = alarm;
+            mEventListener  = eventListener;
+            mDBManager      = dbManager;
+            mReturnedId     = -1;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mDAOAlarms.insert (mAlarm);
+            mReturnedId = mDAOAlarms.insert (mAlarm);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            if (mReturnedId == -1)
+                return;
+
+            mAlarm.setId (mReturnedId);
+            mEventListener.onDataInserted   (mAlarm);
             mEventListener.onDatabaseUpdate (mDBManager.getAllAlarmsAsync());
         }
     }
@@ -134,24 +144,30 @@ public class DBManager {
      */
     private static class UpdateAlarmTask extends AsyncTask<Void, Void, Void> {
 
-        private DBManager mDBManager;
-        private IStatusHandler mEventListener;
-        private Alarm mAlarm;
+        private int             mReturnedId;
+        private DBManager       mDBManager;
+        private IStatusHandler  mEventListener;
+        private Alarm           mAlarm;
 
         UpdateAlarmTask (Alarm alarm, IStatusHandler eventListener, DBManager dbManager) {
-            mAlarm = alarm;
-            mEventListener = eventListener;
-            mDBManager = dbManager;
+            mAlarm          = alarm;
+            mEventListener  = eventListener;
+            mDBManager      = dbManager;
+            mReturnedId     = 0;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mDAOAlarms.update(mAlarm);
+            mReturnedId = mDAOAlarms.update(mAlarm);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            if (mReturnedId <= 0)
+                return;
+
+            mEventListener.onDataUpdated    (mAlarm);
             mEventListener.onDatabaseUpdate (mDBManager.getAllAlarmsAsync());
         }
     }
@@ -186,24 +202,32 @@ public class DBManager {
      */
     private static class RemoveAlarmTask extends AsyncTask<Void, Void, Void> {
 
-        private DBManager mDBManager;
-        private IStatusHandler mEventListener;
-        private long mId;
+        private int             mReturnedId;
+        private DBManager       mDBManager;
+        private IStatusHandler  mEventListener;
+        private long            mId;
+        private Alarm           mAlarmCopy;
 
-        RemoveAlarmTask(long id, IStatusHandler eventListener, DBManager dbManager) {
-            mId = id;
-            mEventListener = eventListener;
-            mDBManager = dbManager;
+        RemoveAlarmTask(Alarm alarmCopy, IStatusHandler eventListener, DBManager dbManager) {
+            mAlarmCopy      = alarmCopy;
+            mId             = alarmCopy.getId();
+            mEventListener  = eventListener;
+            mDBManager      = dbManager;
+            mReturnedId     = 0;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mDAOAlarms.remove(mId);
+            mReturnedId = mDAOAlarms.remove(mId);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            if (mReturnedId <= 0)
+                return;
+
+            mEventListener.onDataRemoved    (mAlarmCopy);
             mEventListener.onDatabaseUpdate (mDBManager.getAllAlarmsAsync());
         }
     }
@@ -214,12 +238,12 @@ public class DBManager {
      */
     private static class ClearAlarmsTask extends AsyncTask<Void, Void, Void> {
 
-        private DBManager mDBManager;
-        private IStatusHandler mEventListener;
+        private DBManager       mDBManager;
+        private IStatusHandler  mEventListener;
 
         public ClearAlarmsTask (IStatusHandler eventListener, DBManager dbManager) {
-            mEventListener = eventListener;
-            mDBManager = dbManager;
+            mEventListener  = eventListener;
+            mDBManager      = dbManager;
         }
 
         @Override

@@ -16,6 +16,7 @@ import com.rmm.clocksuite.entity.Alarm;
 import com.rmm.clocksuite.entity.AlarmRepeatMode;
 import com.rmm.clocksuite.presenter.AlarmsPresenter;
 import com.rmm.clocksuite.presenter.IAlarmsContracts;
+import com.rmm.clocksuite.view.AlarmFiringHandler;
 import com.rmm.clocksuite.view.views.CustomToggleTextView;
 
 import java.util.ArrayList;
@@ -67,6 +68,22 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
             currentAlarm = mPresenter.getAlarm (currentAlarmId);
             loadFieldsDataFromAlarm(currentAlarm);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mPresenter.setCurrentView(this);
+
+        if (currentAlarm != null)
+            return;
+
+        // Sets the number pickers values to the current time
+        Calendar calendar = Calendar.getInstance();
+
+          npHour.setValue (calendar.get(Calendar.HOUR_OF_DAY));
+        npMinute.setValue (calendar.get(Calendar.MINUTE));
     }
 
     /**
@@ -178,6 +195,7 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         Calendar time = Calendar.getInstance();
         time.set (Calendar.HOUR_OF_DAY, npHour.getValue());
         time.set (Calendar.MINUTE, npMinute.getValue());
+        time.set (Calendar.SECOND, 0);
 
         // Repeat mode
         AlarmRepeatMode repeatMode = new AlarmRepeatMode();
@@ -197,7 +215,7 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
      */
     private void delete () {
         if (currentAlarm != null)
-            mPresenter.removeAlarm (currentAlarm);
+            mPresenter.removeAlarm(currentAlarm);
 
         goToTabbedActivity();
     }
@@ -219,6 +237,7 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         Alarm alarm = createAlarmFromViews();
 
         mPresenter.addAlarm ( alarm );
+
         goToTabbedActivity();
     }
 
@@ -228,8 +247,10 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
     private void updateAlarm () {
         Alarm alarm = createAlarmFromViews();
         alarm.setId (currentAlarm.getId());
+        alarm.setEnabled (true);
 
         mPresenter.updateAlarm ( alarm );
+
         goToTabbedActivity();
     }
 
@@ -244,5 +265,34 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
     @Override
     public void onDataChanged(ArrayList<Alarm> alarms) {
 
+    }
+
+    @Override
+    public void onAlarmAdded(Alarm alarm) {
+        Log.d ("DEBUGGING", "added: " + alarm.getId());
+
+        AlarmFiringHandler alarmFiringHandler = AlarmFiringHandler.getInstance();
+        alarmFiringHandler.setScheduledAlarm (getApplicationContext(), alarm);
+    }
+
+    @Override
+    public void onAlarmUpdated(Alarm alarm) {
+        Log.d ("DEBUGGING", "update: " + alarm.getId() + " - enabled: " + alarm.getEnabled() );
+
+        AlarmFiringHandler alarmFiringHandler = AlarmFiringHandler.getInstance();
+        if (alarm.getEnabled())
+            alarmFiringHandler.updateScheduledAlarm (getApplicationContext(), alarm);
+        else
+            alarmFiringHandler.removeScheduledAlarm (getApplicationContext(), alarm);
+    }
+
+    @Override
+    public void onAlarmRemoved(Alarm alarmCopy) {
+        Log.d ("DEBUGGING", "remove: " + alarmCopy.getId());
+
+        if (currentAlarm != null) {
+            AlarmFiringHandler alarmFiringHandler = AlarmFiringHandler.getInstance();
+            alarmFiringHandler.removeScheduledAlarm(getApplicationContext(), currentAlarm);
+        }
     }
 }

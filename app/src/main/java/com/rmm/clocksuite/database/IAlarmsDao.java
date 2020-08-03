@@ -13,13 +13,13 @@ import java.util.List;
 public interface IAlarmsDao {
 
     @Insert
-    void insert (Alarm alarm);
+    long insert (Alarm alarm);
 
     @Update
-    void update (Alarm alarm);
+    int update (Alarm alarm);
 
     @Query("DELETE FROM table_alarms WHERE alarmId LIKE :id")
-    void remove (long id);
+    int remove (long id);
 
     @Query("DELETE FROM table_alarms")
     void clear ();

@@ -20,6 +20,7 @@ import com.rmm.clocksuite.R;
 import com.rmm.clocksuite.entity.Alarm;
 import com.rmm.clocksuite.presenter.AlarmsPresenter;
 import com.rmm.clocksuite.presenter.IAlarmsContracts;
+import com.rmm.clocksuite.view.AlarmFiringHandler;
 import com.rmm.clocksuite.view.activities.AlarmDetailsActivity;
 import com.rmm.clocksuite.view.adapters.AlarmsRecylerAdapter;
 
@@ -60,6 +61,12 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         return inflater.inflate(R.layout.fragment_alarms, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.setCurrentView(this);
+    }
+
     /**
      *
      * @param view
@@ -95,6 +102,13 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
                 "Alarm " + position + " changed state to " + (state ? "true" : "false"),
                 Toast.LENGTH_SHORT
         ).show();
+
+//        Log.d("DEBUGGING", "(" + position + ") checked: " + state);
+//        AlarmFiringHandler alarmFiringHandler = AlarmFiringHandler.getInstance();
+//        if (state)
+//            alarmFiringHandler.enableAlarm (getActivity().getApplicationContext(), alarm);
+//        else
+//            alarmFiringHandler.disableAlarm (getActivity().getApplicationContext(), alarm);
     }
 
     /**
@@ -149,5 +163,20 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         listAlarms = alarms;
         alarmsRecylerAdapter.setData (listAlarms);
         alarmsRecylerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAlarmAdded(Alarm alarm) {
+
+    }
+
+    @Override
+    public void onAlarmUpdated(Alarm alarm) {
+
+    }
+
+    @Override
+    public void onAlarmRemoved(Alarm alarmCopy) {
+
     }
 }

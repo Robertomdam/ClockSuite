@@ -1,6 +1,9 @@
 package com.rmm.clocksuite.presenter;
 
 import android.content.Context;
+import android.util.Log;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.rmm.clocksuite.entity.Alarm;
 import com.rmm.clocksuite.usecase.AlarmsModel;
@@ -14,6 +17,8 @@ public class AlarmsPresenter implements IAlarmsContracts.IAlarmsPresenterFromVie
 
     private IAlarmsContracts.IAlarmsHandlerPresenter mPresenterAlarmHandler;
     private IAlarmsContracts.IAlarmsDetailsPresenter mPresenterAlarmDetails;
+
+    private IAlarmsContracts.IBaseAlarmsPresenter mCurrentPresenter;
 
     private IAlarmsContracts.IAlarmsModel mModel;
 
@@ -78,7 +83,7 @@ public class AlarmsPresenter implements IAlarmsContracts.IAlarmsPresenterFromVie
      */
     @Override
     public void removeAlarm (Alarm alarm) {
-        mModel.removeAlarm (alarm.getId());
+        mModel.removeAlarm (alarm);
     }
 
     /**
@@ -101,6 +106,19 @@ public class AlarmsPresenter implements IAlarmsContracts.IAlarmsPresenterFromVie
     }
 
     /**
+     * Sets the current presenter of the view that is active at the moment.
+     * @param currentView The current view that is on the foreground.
+     */
+    @Override
+    public void setCurrentView (IAlarmsContracts.IBaseAlarmsView currentView) {
+
+        if (currentView instanceof IAlarmsContracts.IAlarmsHandlerView)
+            mCurrentPresenter = mPresenterAlarmHandler;
+        else if (currentView instanceof IAlarmsContracts.IAlarmsDetailsView)
+            mCurrentPresenter = mPresenterAlarmDetails;
+    }
+
+    /**
      * Notifies to the views that the data of the alarms has changed.
      * @param alarmsList The new list of alarms.
      */
@@ -112,5 +130,23 @@ public class AlarmsPresenter implements IAlarmsContracts.IAlarmsPresenterFromVie
 
         if (mPresenterAlarmDetails != null)
             mPresenterAlarmDetails.onDataChanged(alarmsList);
+    }
+
+    @Override
+    public void onAlarmAdded(Alarm alarm) {
+        mPresenterAlarmHandler.onAlarmAdded(alarm);
+        mPresenterAlarmDetails.onAlarmAdded(alarm);
+    }
+
+    @Override
+    public void onAlarmUpdated(Alarm alarm) {
+        mPresenterAlarmHandler.onAlarmUpdated(alarm);
+        mPresenterAlarmDetails.onAlarmUpdated(alarm);
+    }
+
+    @Override
+    public void onAlarmRemoved(Alarm alarmCopy) {
+        mPresenterAlarmHandler.onAlarmRemoved(alarmCopy);
+        mPresenterAlarmDetails.onAlarmRemoved(alarmCopy);
     }
 }

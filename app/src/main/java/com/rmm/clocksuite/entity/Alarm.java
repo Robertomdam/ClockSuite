@@ -31,7 +31,7 @@ public class Alarm {
     public Alarm (String note, Calendar time, AlarmRepeatMode alarmRepeatMode)
     {
         mId = 0;        // This has to be zero in order to Room (@insert) to not be inserted in the query
-        mEnabled = false;
+        mEnabled = true;
 
         mNote = note;
         mTime = time;

@@ -25,6 +25,22 @@ public class AlarmsDetailsPresenter implements IAlarmsContracts.IAlarmsDetailsPr
      */
     @Override
     public void onDataChanged(ArrayList<Alarm> alarms) {
+
         mView.onDataChanged (alarms);
+    }
+
+    @Override
+    public void onAlarmAdded(Alarm alarm) {
+        mView.onAlarmAdded(alarm);
+    }
+
+    @Override
+    public void onAlarmUpdated(Alarm alarm) {
+        mView.onAlarmUpdated(alarm);
+    }
+
+    @Override
+    public void onAlarmRemoved(Alarm alarmCopy) {
+        mView.onAlarmRemoved(alarmCopy);
     }
 }
