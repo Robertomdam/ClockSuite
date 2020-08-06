@@ -9,18 +9,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rmm.clocksuite.R;
 import com.rmm.clocksuite.entity.Alarm;
-import com.rmm.clocksuite.presenter.AlarmsPresenter;
-import com.rmm.clocksuite.presenter.IAlarmsContracts;
-import com.rmm.clocksuite.view.AlarmFiringHandler;
+import com.rmm.clocksuite.presenter.alarms.AlarmsPresenter;
+import com.rmm.clocksuite.presenter.alarms.IAlarmsContracts;
 import com.rmm.clocksuite.view.activities.AlarmDetailsActivity;
 import com.rmm.clocksuite.view.adapters.AlarmsRecylerAdapter;
 
@@ -61,6 +58,9 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         return inflater.inflate(R.layout.fragment_alarms, container, false);
     }
 
+    /**
+     * Tells the presenter that this is the current view.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -68,7 +68,8 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
     }
 
     /**
-     *
+     * Registers the view on the presenter and gets the list of alarms.
+     * Configures the recycler view and the floating action button.
      * @param view
      * @param savedInstanceState
      */
@@ -85,11 +86,20 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         setupFloatingActionButton();
     }
 
+    /**
+     * Goes to the alarm details activity.
+     * @param position
+     */
     @Override
     public void onAlarmItemSelected (int position) {
         goActivityAlarmDetail (listAlarms.get(position).getId());
     }
 
+    /**
+     * Calls the presenter to save the new state of the alarm
+     * @param position
+     * @param state
+     */
     @Override
     public void onAlarmSwitchStateChanged(int position, boolean state) {
 
@@ -97,18 +107,11 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         alarm.setEnabled (state);
         mPresenter.updateAlarm (alarm);
 
-        Toast.makeText (
-                getContext(),
-                "Alarm " + position + " changed state to " + (state ? "true" : "false"),
-                Toast.LENGTH_SHORT
-        ).show();
-
-//        Log.d("DEBUGGING", "(" + position + ") checked: " + state);
-//        AlarmFiringHandler alarmFiringHandler = AlarmFiringHandler.getInstance();
-//        if (state)
-//            alarmFiringHandler.enableAlarm (getActivity().getApplicationContext(), alarm);
-//        else
-//            alarmFiringHandler.disableAlarm (getActivity().getApplicationContext(), alarm);
+//        Toast.makeText (
+//                getContext(),
+//                "Alarm " + position + " changed state to " + (state ? "true" : "false"),
+//                Toast.LENGTH_SHORT
+//        ).show();
     }
 
     /**
@@ -158,6 +161,10 @@ public class AlarmsFragment extends Fragment implements IAlarmsContracts.IAlarms
         startActivity (intent);
     }
 
+    /**
+     * Refreshes the data of the recycler view.
+     * @param alarms
+     */
     @Override
     public void onDataChanged(ArrayList<Alarm> alarms) {
         listAlarms = alarms;

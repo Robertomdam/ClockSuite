@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.rmm.clocksuite.database.DBManager;
 import com.rmm.clocksuite.entity.Alarm;
-import com.rmm.clocksuite.presenter.IAlarmsContracts;
+import com.rmm.clocksuite.presenter.alarms.IAlarmsContracts;
 
 import java.util.ArrayList;
 

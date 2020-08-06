@@ -1,4 +1,4 @@
-package com.rmm.clocksuite.presenter;
+package com.rmm.clocksuite.presenter.alarms;
 
 import android.content.Context;
 

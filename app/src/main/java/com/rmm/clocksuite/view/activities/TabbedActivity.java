@@ -2,7 +2,6 @@ package com.rmm.clocksuite.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
@@ -12,7 +11,7 @@ import com.rmm.clocksuite.R;
 import com.rmm.clocksuite.view.adapters.ViewPagerAdapter;
 import com.rmm.clocksuite.view.fragments.AlarmsFragment;
 import com.rmm.clocksuite.view.fragments.ChronoFragment;
-import com.rmm.clocksuite.view.fragments.TimeZoneFragment;
+import com.rmm.clocksuite.view.fragments.TimezoneFragment;
 import com.rmm.clocksuite.view.fragments.TimerFragment;
 
 /**
@@ -59,7 +58,7 @@ public class TabbedActivity extends AppCompatActivity {
     private void createFragments ()
     {
         Fragment fragAlarms   = new AlarmsFragment   ();
-        Fragment fragTimeZone = new TimeZoneFragment ();
+        Fragment fragTimeZone = new TimezoneFragment();
         Fragment fragChrono   = new ChronoFragment   ();
         Fragment fragTimer    = new TimerFragment    ();
 

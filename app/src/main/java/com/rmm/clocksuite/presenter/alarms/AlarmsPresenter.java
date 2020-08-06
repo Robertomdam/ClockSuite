@@ -1,9 +1,6 @@
-package com.rmm.clocksuite.presenter;
+package com.rmm.clocksuite.presenter.alarms;
 
 import android.content.Context;
-import android.util.Log;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.rmm.clocksuite.entity.Alarm;
 import com.rmm.clocksuite.usecase.AlarmsModel;

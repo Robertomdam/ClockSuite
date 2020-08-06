@@ -14,8 +14,8 @@ import android.widget.NumberPicker;
 import com.rmm.clocksuite.R;
 import com.rmm.clocksuite.entity.Alarm;
 import com.rmm.clocksuite.entity.AlarmRepeatMode;
-import com.rmm.clocksuite.presenter.AlarmsPresenter;
-import com.rmm.clocksuite.presenter.IAlarmsContracts;
+import com.rmm.clocksuite.presenter.alarms.AlarmsPresenter;
+import com.rmm.clocksuite.presenter.alarms.IAlarmsContracts;
 import com.rmm.clocksuite.view.AlarmFiringHandler;
 import com.rmm.clocksuite.view.views.CustomToggleTextView;
 
@@ -70,6 +70,11 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         }
     }
 
+    /**
+     * Tells the presenter that this is the current.
+     * Also, if one existing alarm has been loaded, sets the values of the number pickers as the
+     * same as the alarm time.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -267,6 +272,10 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
 
     }
 
+    /**
+     * Sets up an android alarm.
+     * @param alarm The recently created alarm.
+     */
     @Override
     public void onAlarmAdded(Alarm alarm) {
         Log.d ("DEBUGGING", "added: " + alarm.getId());
@@ -275,6 +284,12 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
         alarmFiringHandler.setScheduledAlarm (getApplicationContext(), alarm);
     }
 
+    /**
+     * Updates the android alarm based on the recently updated alarm.
+     * In case the alarm is updated by enable or disable it, it will just remove the
+     * android alarm or creates a new one.
+     * @param alarm The updated alarm.
+     */
     @Override
     public void onAlarmUpdated(Alarm alarm) {
         Log.d ("DEBUGGING", "update: " + alarm.getId() + " - enabled: " + alarm.getEnabled() );
@@ -286,6 +301,10 @@ public class AlarmDetailsActivity extends AppCompatActivity implements IAlarmsCo
             alarmFiringHandler.removeScheduledAlarm (getApplicationContext(), alarm);
     }
 
+    /**
+     * Removes the android alarm that corresponds with the recently deleted one.
+     * @param alarmCopy The removed alarm.
+     */
     @Override
     public void onAlarmRemoved(Alarm alarmCopy) {
         Log.d ("DEBUGGING", "remove: " + alarmCopy.getId());

@@ -3,16 +3,23 @@ package com.rmm.clocksuite.view;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.rmm.clocksuite.entity.Alarm;
-import com.rmm.clocksuite.presenter.AlarmsPresenter;
+import com.rmm.clocksuite.presenter.alarms.AlarmsPresenter;
 
 import java.util.ArrayList;
 
+/**
+ * BroadcastReceiver that accomplishes the rescheduling task of all the alarms in the app.
+ */
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
+    /**
+     * Gets all the alarms in the system and reschedules them.
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Clock Suite: Phone boot", Toast.LENGTH_LONG).show();

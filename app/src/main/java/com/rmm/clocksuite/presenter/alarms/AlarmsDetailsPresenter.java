@@ -1,23 +1,21 @@
-package com.rmm.clocksuite.presenter;
-
-import androidx.core.app.AppLaunchChecker;
+package com.rmm.clocksuite.presenter.alarms;
 
 import com.rmm.clocksuite.entity.Alarm;
 
 import java.util.ArrayList;
 
 /**
- * Specific presenter for the view that handles the group of alarms.
+ * Specific presenter for the view that will handle the details of the alarms.
  */
-public class AlarmsHandlerPresenter implements IAlarmsContracts.IAlarmsHandlerPresenter {
+public class AlarmsDetailsPresenter implements IAlarmsContracts.IAlarmsDetailsPresenter {
 
-    private IAlarmsContracts.IAlarmsHandlerView mView;
+    private IAlarmsContracts.IAlarmsDetailsView mView;
 
     /**
      * Construct the instance of the presenter and sets its view.
      * @param view The view of the presenter.
      */
-    public AlarmsHandlerPresenter (IAlarmsContracts.IAlarmsHandlerView view) {
+    public AlarmsDetailsPresenter (IAlarmsContracts.IAlarmsDetailsView view) {
         mView = view;
     }
 
@@ -27,6 +25,7 @@ public class AlarmsHandlerPresenter implements IAlarmsContracts.IAlarmsHandlerPr
      */
     @Override
     public void onDataChanged(ArrayList<Alarm> alarms) {
+
         mView.onDataChanged (alarms);
     }
 
