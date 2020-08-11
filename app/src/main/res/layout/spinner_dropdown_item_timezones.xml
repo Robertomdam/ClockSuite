@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/customColorBackgroundLight"
+    android:paddingVertical="6dp"
+    android:paddingHorizontal="8dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginHorizontal="4dp"
+        android:src="@drawable/ic_flag"
+        android:tint="?attr/customColorText"/>
+
+    <TextView
+        android:id="@+id/tvSpItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:textSize="14sp"
+        android:textColor="?attr/customColorText"
+        tools:text="Denmark" />
+
+</LinearLayout>

@@ -6,13 +6,8 @@ import com.rmm.clocksuite.presenter.timezones.ITimezonesContracts;
 import com.rmm.clocksuite.retrofit.CountryData;
 import com.rmm.clocksuite.retrofit.RetrofitManager;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class TimezonesModel implements ITimezonesContracts.ITimezonesModel, RetrofitManager.IRetrofitManagerDataCollector {
@@ -28,12 +23,14 @@ public class TimezonesModel implements ITimezonesContracts.ITimezonesModel, Retr
     }
 
     @Override
-    public void onListCountriesReceived(ArrayList<CountryData> countries) {
+    public void onListCountriesReceived (ArrayList<CountryData> countries) {
         Log.d("DEBUGGING", "OK response: Num countries: " + countries.size());
 
         debug (countries.get(212));
         debug (countries.get(0));
         debug (countries.get(156));
+
+        mPresenter.onListCountriesTimezonesReceived(countries);
     }
 
     @Override

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rmm.clocksuite.R;
 import com.rmm.clocksuite.presenter.timezones.ITimezonesContracts;
 import com.rmm.clocksuite.presenter.timezones.TimezonesPresenter;
+import com.rmm.clocksuite.retrofit.CountryData;
 import com.rmm.clocksuite.view.adapters.TimezonesRecyclerAdapter;
+
+import java.util.ArrayList;
 
 
 /**
@@ -70,13 +72,19 @@ public class TimezoneFragment extends Fragment implements ITimezonesContracts.IT
     }
 
     private void setupRecyclerView () {
-        mTimezonesRecyclerAdapter = new TimezonesRecyclerAdapter ();
+        mTimezonesRecyclerAdapter = new TimezonesRecyclerAdapter (getContext());
         rvTimezones.setAdapter (mTimezonesRecyclerAdapter);
         rvTimezones.setLayoutManager (new LinearLayoutManager (getContext()));
     }
 
     private void addTimezoneItem () {
         mTimezonesRecyclerAdapter.addTimezoneItem ("Patata");
-        mTimezonesRecyclerAdapter.notifyDataSetChanged();
+        mTimezonesRecyclerAdapter.notifyItemInserted (mTimezonesRecyclerAdapter.getItemCount());
+//        mTimezonesRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onListCountriesTimezonesReceived(ArrayList<CountryData> countries) {
+        mTimezonesRecyclerAdapter.updateCountriesTimezones(countries);
     }
 }
