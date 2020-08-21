@@ -1,13 +1,11 @@
 package com.rmm.clocksuite.view.adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,12 +23,13 @@ public class TimezonesRecyclerAdapter extends RecyclerView.Adapter<TimezonesRecy
     private ArrayList<String> mListTimezones;
     private ArrayList<TimezonesViewHolder> mTimezonesViewHolders;
 
-    private ArrayList<CountryData> mTimezoneCountiesData;
+    private ArrayList<CountryData> mTimezoneCountriesData;
 
     public TimezonesRecyclerAdapter (@NonNull Context context) {
         mContext = context;
         mListTimezones = new ArrayList<>();
         mTimezonesViewHolders = new ArrayList<>();
+        mTimezoneCountriesData = new ArrayList<>();
     }
 
     public void addTimezoneItem (String timezone) {
@@ -51,7 +50,7 @@ public class TimezonesRecyclerAdapter extends RecyclerView.Adapter<TimezonesRecy
 
     @Override
     public void onBindViewHolder(@NonNull TimezonesViewHolder holder, int position) {
-        mTimezonesViewHolders.get (position).setCountriesData (mTimezoneCountiesData);
+        mTimezonesViewHolders.get (position).setCountriesData (mTimezoneCountriesData);
         holder.updateSpinner();
 
         holder.spTimezones.setSelection (0);
@@ -64,11 +63,12 @@ public class TimezonesRecyclerAdapter extends RecyclerView.Adapter<TimezonesRecy
     }
 
     public void updateCountriesTimezones (ArrayList<CountryData> data) {
-        mTimezoneCountiesData = data;
+        mTimezoneCountriesData = data;
+//        mFlags = flags;
 
         // Updates the existing ones
         for (int i = 0; i < mTimezonesViewHolders.size(); i++) {
-            mTimezonesViewHolders.get (i).setCountriesData (mTimezoneCountiesData);
+            mTimezonesViewHolders.get (i).setCountriesData (mTimezoneCountriesData);
         }
     }
 
@@ -93,22 +93,17 @@ public class TimezonesRecyclerAdapter extends RecyclerView.Adapter<TimezonesRecy
             spTimezones.setAdapter (mSpinnerAdapter);
         }
 
-        private void addSpinnerItem (CountryData countryData) {
-            mSpinnerAdapter.add (countryData);
-        }
-
         private void updateSpinner () {
             spTimezones.setAdapter (mSpinnerAdapter);
         }
 
-        private void setCountriesData(ArrayList<CountryData> countries) {
+        private void setCountriesData (ArrayList<CountryData> countries) {
             for (int i = 0; i < countries.size(); i++) {
-                addSpinnerItem ( countries.get(i) );
+                mSpinnerAdapter.add ( countries.get(i) );
             }
-        }
-    }
 
-    public interface EventListener {
-        void onItemDataBinding (@NonNull TimezonesViewHolder viewHolder, int position);
+            mSpinnerAdapter.notifyDataSetChanged();
+            spTimezones.setAdapter(mSpinnerAdapter);
+        }
     }
 }
